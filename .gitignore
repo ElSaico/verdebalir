@@ -1,0 +1,10 @@
+# editor files
+.idea/
+*.sw{o,p}
+
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
