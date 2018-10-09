@@ -38,8 +38,8 @@ plugins:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  get-stocks:
+    handler: handler.getStocks
     events:
       - http: true
         x-azure-settings:
