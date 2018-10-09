@@ -12,6 +12,8 @@
 # Happy Coding!
 
 service: verdebalir
+app: verdebalir
+tenant: elsaico
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -19,9 +21,11 @@ service: verdebalir
 
 provider:
   name: azure
-  location: West US
+  location: East US
 
 plugins:
+  - serverless-webpack
+  - serverless-offline
   - serverless-azure-functions
 
 # you can add packaging information here

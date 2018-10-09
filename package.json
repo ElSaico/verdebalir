@@ -1,13 +1,18 @@
 {
   "name": "verdebalir",
   "version": "1.0.0",
-  "description": "Azure Functions sample for the Serverless framework",
+  "description": "",
   "main": "handler.js",
-  "keywords": [
-    "azure",
-    "serverless"
-  ],
+  "keywords": [],
   "devDependencies": {
-    "serverless-azure-functions": "*"
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.4",
+    "prettier": "^1.14.3",
+    "serverless": "^1.32.0",
+    "serverless-azure-functions": "^0.6.0",
+    "serverless-offline": "^3.27.0",
+    "serverless-webpack": "^5.2.0",
+    "webpack": "^4.20.2",
+    "webpack-node-externals": "^1.7.2"
   }
 }
