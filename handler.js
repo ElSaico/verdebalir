@@ -1,7 +1,8 @@
 import cheerio from "cheerio";
-import { parseScript } from "esprima";
 import request from "request-promise";
 import zipObject from "lodash.zipobject";
+
+const stockUrl = "http://www.fundamentus.com.br/detalhes.php";
 
 const responseError = (context, err, message) => {
   const body = { message: message, stacktrace: err };
@@ -11,28 +12,18 @@ const responseError = (context, err, message) => {
 };
 
 const tickerListOptions = {
-  uri: "http://www.fundamentus.com.br/script/cmplte.php",
+  uri: stockUrl,
   transform: body => {
-    // this is VERY brittle and assumes the output starts out like this:
-    //    window.addEvent('domready', function(){
-    // 		  var searchInput = $('completar');
-    // 			var tokens = [
-    //      ...
-    // actually replaceable by a call to http://www.fundamentus.com.br/detalhes.php
-    // then query ".resultado td a" and get all text values
-    const script = parseScript(body);
-    const elements =
-      script.body[0].expression.arguments[1].body.body[1].declarations[0].init
-        .elements;
-    return elements.map(expression => expression.elements[0].value);
+    const $ = cheerio.load(body);
+    return $(".resultado td a").map((_, a) => $(a).text()).get();
   }
 };
 
 const parseIndicators = body => {
   const $ = cheerio.load(body);
   const table = $(".conteudo table:nth-of-type(3)");
-  const labels = table.find("td.label:nth-child(n+2) .txt").map((_, cell) => cell.innerText);
-  const values = table.find("td.data:nth-child(n+3) .txt").map((_, cell) => cell.innerText);
+  const labels = table.find("td.label:nth-child(n+2) .txt").map((_, cell) => $(cell).text()).get();
+  const values = table.find("td.data:nth-child(n+3) .txt").map((_, cell) => $(cell).text().trim()).get();
   return zipObject(labels, values);
 };
 
@@ -51,7 +42,7 @@ export const getStocks = async context => {
     let indicators;
     try {
       indicators = await request({
-        uri: "http://www.fundamentus.com.br/detalhes.php",
+        uri: stockUrl,
         qs: {papel: ticker},
         transform: parseIndicators
       });

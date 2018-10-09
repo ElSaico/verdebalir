@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "cheerio": "^0.22.0",
-    "esprima": "^4.0.1",
     "lodash.zipobject": "^4.1.3",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
