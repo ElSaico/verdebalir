@@ -8,11 +8,9 @@
     "start": "webpack handler.js -o local/handler.js && cd local && func start"
   },
   "dependencies": {
-    "bottleneck": "^2.12.0",
+    "@akanass/rx-http-request": "^3.0.0",
     "cheerio": "^0.22.0",
-    "lodash.zipobject": "^4.1.3",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.2"
+    "rxjs": "^6.3.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
