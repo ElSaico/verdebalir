@@ -8,3 +8,7 @@ jspm_packages
 
 # Serverless directories
 .serverless
+
+# local testing files
+local/handler.js
+local/handler.js.map
