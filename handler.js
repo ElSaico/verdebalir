@@ -1,8 +1,11 @@
+import Bottleneck from "bottleneck";
 import cheerio from "cheerio";
 import request from "request-promise";
 import zipObject from "lodash.zipobject";
 
 const stockUrl = "http://www.fundamentus.com.br/detalhes.php";
+
+const throttle = new Bottleneck({ minTime: 500 });
 
 const responseError = (context, err, message) => {
   const body = { message: message, stacktrace: err };
@@ -50,21 +53,27 @@ export const getStocks = async context => {
     return;
   }
 
-  tickers.map(async ticker => {
-    let indicators;
-    try {
-      indicators = await request({
-        uri: stockUrl,
-        qs: { papel: ticker },
-        transform: parseIndicators
-      });
-      context.log(indicators);
-    } catch (err) {
-      responseError(
-        context,
-        err,
-        "Failure on obtaining indicators for stock " + ticker
-      );
-    }
-  });
+  tickers = await new Map(
+    tickers.map(async ticker => {
+      context.log(`Fetching indicators for stock ${ticker}...`);
+      let indicators;
+      try {
+        indicators = await throttle.schedule(() =>
+          request({
+            uri: stockUrl,
+            qs: { papel: ticker },
+            transform: parseIndicators
+          })
+        );
+      } catch (err) {
+        context.log.error(
+          `Failure on obtaining indicators for stock ${ticker}`
+        );
+        return [ticker, {}];
+      }
+      return [ticker, indicators];
+    })
+  );
+
+  context.res = { body: JSON.stringify(tickers) };
 };
